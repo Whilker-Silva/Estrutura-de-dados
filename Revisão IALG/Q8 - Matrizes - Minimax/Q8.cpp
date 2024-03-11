@@ -4,11 +4,9 @@ using namespace std;
 int main()
 {
     int matriz[10][10];
-    int lMaior = 0;
-    int cMaior = 0;
 
-    int lMenor = 0;
-    int cMenor = 0;
+    int maiorL = 0;
+    int maiorC = 0;
 
     for (int i = 0; i < 10; i++)
     {
@@ -23,26 +21,28 @@ int main()
     {
         for (int j = 0; j < 10; j++)
         {
-            if (matriz[i][j] > matriz[lMaior][cMaior])
+            if (matriz[i][j] > matriz[maiorL][maiorC])
             {
-                lMaior = i;
-                cMaior = j;
+                maiorL = i;
+                maiorC = j;
             }
         }
     }
 
-    lMenor = lMaior;
-    cMenor = cMaior;
+    int lMenor = maiorL;
+    int cMenor = maiorC;
+
     // procura menor da linha
-    for (int i = 0; i < 10; i++)
+    for (int j = 0; j < 10; j++)
     {
-        if (matriz[lMenor][i] < matriz[lMenor][cMenor])
+        if (matriz[lMenor][j] < matriz[lMenor][cMenor])
         {
-            lMenor = i;
+            cMenor = j;
         }
     }
 
     cout << matriz[lMenor][cMenor] << endl;
+    cout << lMenor << " " << cMenor;
 
     return 0;
 }
