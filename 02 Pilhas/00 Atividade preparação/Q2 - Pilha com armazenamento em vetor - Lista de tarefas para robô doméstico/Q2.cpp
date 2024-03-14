@@ -61,6 +61,19 @@ Pilha::~Pilha()
     delete[] mPilha;
 }
 
+void Pilha::Empilhar(const Dado &d)
+{
+    if (this->Cheia())
+    {
+        throw runtime_error("Erro: pilha cheia!");
+    }
+    else
+    {
+        posTopo++;
+        mPilha[posTopo] = d;
+    }
+}
+
 Dado Pilha::Desempilhar()
 {
     if (this->Vazia())
@@ -71,17 +84,6 @@ Dado Pilha::Desempilhar()
     Dado topo = mPilha[posTopo];
     posTopo--;
     return topo;
-}
-
-void Pilha::Empilhar(const Dado &d)
-{
-    if (this->Cheia())
-    {
-        throw runtime_error("Erro: pilha cheia!");
-    }
-
-    posTopo++;
-    mPilha[posTopo] = d;
 }
 
 void Pilha::LimparTudo()
@@ -103,7 +105,7 @@ void Pilha::Topo()
 
 bool Pilha::Vazia()
 {
-    if (posTopo == -1)
+    if (posTopo == PILHAVAZIA)
     {
         return true;
     }
