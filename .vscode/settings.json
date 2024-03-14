@@ -16,6 +16,7 @@
         "format": "cpp",
         "initializer_list": "cpp",
         "type_traits": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "stdexcept": "cpp"
     }
 }
