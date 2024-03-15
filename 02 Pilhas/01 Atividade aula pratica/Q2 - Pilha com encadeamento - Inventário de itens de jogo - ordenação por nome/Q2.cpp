@@ -45,9 +45,8 @@ public:
     // Destrutor que desaloca memória.
     ~Pilha();
     // Retira e retorna o valor que estiver no mPtTopo da pilha.
-    // Escreve uma mensagem de erro se não for possível desempilhar.
     Dado Desempilhar(); // retorna o mPtTopo da Pilha.
-    void RemocaoEspecial(int limIferior);
+    // Ordena a pilha com relação ao nome
     void Ordernar();
     // Insere um valor na pilha.
     void Empilhar(const Dado &d);
@@ -62,6 +61,8 @@ public:
 private:
     Noh *mPtTopo;
     int tamanho;
+
+    bool compararNomes(const string &nome1, const string &nome2);
 };
 
 Pilha::Pilha()
@@ -72,6 +73,7 @@ Pilha::Pilha()
 
 Pilha::~Pilha()
 {
+    delete mPtTopo;
 }
 
 void Pilha::Empilhar(const Dado &d)
@@ -99,26 +101,6 @@ Dado Pilha::Desempilhar()
     }
 }
 
-void Pilha::RemocaoEspecial(int limIferior)
-{
-    Pilha *aux = new Pilha();
-
-    while (!this->Vazia())
-    {
-        aux->Empilhar(this->Desempilhar());
-        if (aux->mPtTopo->mDado.valor < limIferior)
-        {
-            imprimir_dado(aux->Desempilhar());
-        }
-    }
-
-    while (!aux->Vazia())
-    {
-        this->Empilhar(aux->Desempilhar());
-    }
-    delete aux;
-}
-
 void Pilha::Ordernar()
 {
     Pilha *aux = new Pilha();
@@ -134,17 +116,18 @@ void Pilha::Ordernar()
         }
         else
         {
-            if (dAux.nome <= aux->mPtTopo->mDado.nome)
+            if (!compararNomes(dAux.nome, aux->mPtTopo->mDado.nome))
             {
                 aux->Empilhar(dAux);
             }
 
             else
             {
-                while (!aux->Vazia() && dAux.nome > aux->mPtTopo->mDado.nome)
+                while (!aux->Vazia() && compararNomes(dAux.nome, aux->mPtTopo->mDado.nome))
                 {
                     this->Empilhar(aux->Desempilhar());
                 }
+                Empilhar(dAux);
             }
         }
     }
@@ -154,6 +137,26 @@ void Pilha::Ordernar()
         this->Empilhar(aux->Desempilhar());
     }
     delete aux;
+}
+
+bool Pilha::compararNomes(const string &nome1, const string &nome2)
+{
+    int tamanho = std::min(nome1.size(), nome2.size());
+
+    for (int i = 0; i < tamanho; ++i)
+    {
+        if (nome1[i] < nome2[i])
+            return true;
+        else if (nome1[i] > nome2[i])
+            return false;
+    }
+
+    if (nome1.size() < nome2.size())
+        return true;
+    else if (nome1.size() > nome2.size())
+        return false;
+    else
+        return true; // Nomes são iguais
 }
 
 void Pilha::LimparTudo()
@@ -201,10 +204,6 @@ int main()
             case 'i': // inserir
                 cin >> info.nome >> info.tipo >> info.valor;
                 pilha.Empilhar(info);
-                break;
-            case 'x':
-                cin >> limInferior;
-                pilha.RemocaoEspecial(limInferior);
                 break;
             case 'r': // remover
                 imprimir_dado(pilha.Desempilhar());

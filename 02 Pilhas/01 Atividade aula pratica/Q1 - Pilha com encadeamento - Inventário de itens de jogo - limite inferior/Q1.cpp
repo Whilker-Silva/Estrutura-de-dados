@@ -47,8 +47,7 @@ public:
     // Retira e retorna o valor que estiver no mPtTopo da pilha.
     // Escreve uma mensagem de erro se não for possível desempilhar.
     Dado Desempilhar(); // retorna o mPtTopo da Pilha.
-    void RemocaoEspecial(int limIferior);
-    void Ordernar();
+    void RemocaoEspecial(int limIferior);    
     // Insere um valor na pilha.
     void Empilhar(const Dado &d);
     // Apagar todos os dados da pilha.
@@ -72,6 +71,7 @@ Pilha::Pilha()
 
 Pilha::~Pilha()
 {
+    delete mPtTopo;
 }
 
 void Pilha::Empilhar(const Dado &d)
