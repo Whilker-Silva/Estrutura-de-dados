@@ -47,7 +47,7 @@ public:
     // Retira e retorna o valor que estiver no mPtTopo da pilha.
     // Escreve uma mensagem de erro se não for possível desempilhar.
     Dado Desempilhar(); // retorna o mPtTopo da Pilha.
-    void RemocaoEspecial(int limIferior);    
+    void RemocaoEspecial(int limIsuperior);    
     // Insere um valor na pilha.
     void Empilhar(const Dado &d);
     // Apagar todos os dados da pilha.
@@ -99,14 +99,14 @@ Dado Pilha::Desempilhar()
     }
 }
 
-void Pilha::RemocaoEspecial(int limIferior)
+void Pilha::RemocaoEspecial(int limIsuperior)
 {
     Pilha *aux = new Pilha();
 
     while (!this->Vazia())
     {
         aux->Empilhar(this->Desempilhar());
-        if (aux->mPtTopo->mDado.valor < limIferior)
+        if (aux->mPtTopo->mDado.valor > limIsuperior)
         {
             imprimir_dado(aux->Desempilhar());
         }
