@@ -40,22 +40,14 @@ public:
 class Pilha
 {
 public:
-    // Constrói pilha vazia.
     Pilha();
-    // Destrutor que desaloca memória.
     ~Pilha();
-    // Retira e retorna o valor que estiver no mPtTopo da pilha.
-    Dado Desempilhar(); // retorna o mPtTopo da Pilha.
-    // Ordena a pilha com relação ao nome
-    void Ordernar();
-    // Insere um valor na pilha.
+
     void Empilhar(const Dado &d);
-    // Apagar todos os dados da pilha.
+    Dado Desempilhar(); // retorna o mPtTopo da Pilha.
+    void Ordernar();
     void LimparTudo();
-    // Imprime o valor que está no mPtTopo sem desempilhar.
-    inline void
-    Topo();
-    // Informa se a pilha está Vazia.
+    inline void Topo();
     inline bool Vazia();
 
 private:
@@ -73,6 +65,7 @@ Pilha::Pilha()
 
 Pilha::~Pilha()
 {
+    this->LimparTudo();
     delete mPtTopo;
 }
 
@@ -91,14 +84,14 @@ Dado Pilha::Desempilhar()
         throw runtime_error("Erro: pilha vazia!");
     }
 
-    else
-    {
-        Noh *aux = mPtTopo;
-        Dado d = aux->mDado;
-        mPtTopo = mPtTopo->mProx;
-        tamanho--;
-        return d;
-    }
+    Noh *nAux = mPtTopo;
+    Dado dAux = nAux->mDado;
+
+    mPtTopo = mPtTopo->mProx;
+    tamanho--;
+
+    delete nAux;
+    return dAux;
 }
 
 void Pilha::Ordernar()
@@ -161,8 +154,10 @@ bool Pilha::compararNomes(const string &nome1, const string &nome2)
 
 void Pilha::LimparTudo()
 {
-    mPtTopo = NULL;
-    tamanho = 0;
+    while (!this->Vazia())
+    {
+        this->Desempilhar();
+    }
 }
 
 void Pilha::Topo()
@@ -172,27 +167,18 @@ void Pilha::Topo()
         throw runtime_error("Erro: pilha vazia!");
     }
 
-    else
-    {
-        imprimir_dado(mPtTopo->mDado);
-    }
+    imprimir_dado(mPtTopo->mDado);
 }
 
 bool Pilha::Vazia()
 {
-    if (tamanho == 0)
-    {
-        return true;
-    }
-
-    return false;
+    return (tamanho == 0) ? 1 : 0;
 }
 
 int main()
 {
     Pilha pilha;
     Dado info;
-    int limInferior;
     char comando;
     do
     {
@@ -201,9 +187,12 @@ int main()
             cin >> comando;
             switch (comando)
             {
-            case 'i': // inserir
+            case 'i': // inserira
                 cin >> info.nome >> info.tipo >> info.valor;
                 pilha.Empilhar(info);
+                break;
+            case 'o':
+                pilha.Ordernar();
                 break;
             case 'r': // remover
                 imprimir_dado(pilha.Desempilhar());
@@ -213,9 +202,6 @@ int main()
                 break;
             case 'e': // espiar
                 pilha.Topo();
-                break;
-            case 'o': // espiar
-                pilha.Ordernar();
                 break;
             case 'f': // finalizar
                 // checado no do-while
