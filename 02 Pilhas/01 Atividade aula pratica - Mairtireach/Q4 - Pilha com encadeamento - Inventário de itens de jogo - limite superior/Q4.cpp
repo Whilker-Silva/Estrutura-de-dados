@@ -40,22 +40,14 @@ public:
 class Pilha
 {
 public:
-    // Constrói pilha vazia.
     Pilha();
-    // Destrutor que desaloca memória.
     ~Pilha();
-    // Retira e retorna o valor que estiver no mPtTopo da pilha.
-    // Escreve uma mensagem de erro se não for possível desempilhar.
-    Dado Desempilhar(); // retorna o mPtTopo da Pilha.
-    void RemocaoEspecial(int limIsuperior);    
-    // Insere um valor na pilha.
+
     void Empilhar(const Dado &d);
-    // Apagar todos os dados da pilha.
+    Dado Desempilhar(); // retorna o mPtTopo da Pilha.
+    void RemocaoEspecial(int limSuperior);
     void LimparTudo();
-    // Imprime o valor que está no mPtTopo sem desempilhar.
-    inline void
-    Topo();
-    // Informa se a pilha está Vazia.
+    inline void Topo();
     inline bool Vazia();
 
 private:
@@ -71,6 +63,7 @@ Pilha::Pilha()
 
 Pilha::~Pilha()
 {
+    this->LimparTudo();
     delete mPtTopo;
 }
 
@@ -89,40 +82,54 @@ Dado Pilha::Desempilhar()
         throw runtime_error("Erro: pilha vazia!");
     }
 
-    else
-    {
-        Noh *aux = mPtTopo;
-        Dado d = aux->mDado;
-        mPtTopo = mPtTopo->mProx;
-        tamanho--;
-        return d;
-    }
+    Noh *nAux = mPtTopo;
+    Dado dAux = nAux->mDado;
+
+    mPtTopo = mPtTopo->mProx;
+    tamanho--;
+
+    delete nAux;
+    return dAux;
 }
 
-void Pilha::RemocaoEspecial(int limIsuperior)
+void Pilha::RemocaoEspecial(int limSuperior)
 {
-    Pilha *aux = new Pilha();
+    if (this->Vazia())
+    {
+        throw runtime_error("Erro: pilha vazia!");
+    }
+
+    Pilha *pAux = new Pilha();
+    Dado dAux;
 
     while (!this->Vazia())
     {
-        aux->Empilhar(this->Desempilhar());
-        if (aux->mPtTopo->mDado.valor > limIsuperior)
+        dAux = this->Desempilhar();
+        if (dAux.valor > limSuperior)
         {
-            imprimir_dado(aux->Desempilhar());
+            imprimir_dado(dAux);
+        }
+
+        else
+        {
+            pAux->Empilhar(dAux);
         }
     }
 
-    while (!aux->Vazia())
+    while (!pAux->Vazia())
     {
-        this->Empilhar(aux->Desempilhar());
+        this->Empilhar(pAux->Desempilhar());
     }
-    delete aux;
+
+    delete pAux;
 }
 
 void Pilha::LimparTudo()
 {
-    mPtTopo = NULL;
-    tamanho = 0;
+    while (!this->Vazia())
+    {
+        this->Desempilhar();
+    }
 }
 
 void Pilha::Topo()
@@ -132,20 +139,12 @@ void Pilha::Topo()
         throw runtime_error("Erro: pilha vazia!");
     }
 
-    else
-    {
-        imprimir_dado(mPtTopo->mDado);
-    }
+    imprimir_dado(mPtTopo->mDado);
 }
 
 bool Pilha::Vazia()
 {
-    if (tamanho == 0)
-    {
-        return true;
-    }
-
-    return false;
+    return (tamanho == 0) ? 1 : 0;
 }
 
 int main()
