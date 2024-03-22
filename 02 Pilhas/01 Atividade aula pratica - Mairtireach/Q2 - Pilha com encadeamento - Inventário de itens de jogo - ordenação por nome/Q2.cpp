@@ -134,7 +134,7 @@ void Pilha::Ordernar()
 
 bool Pilha::compararNomes(const string &nome1, const string &nome2)
 {
-    int tamanho = std::min(nome1.size(), nome2.size());
+    int tamanho = min(nome1.size(), nome2.size());
 
     for (int i = 0; i < tamanho; ++i)
     {
