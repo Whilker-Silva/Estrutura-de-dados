@@ -32,24 +32,16 @@ private:
     int posTopo;
 
 public:
-    // Constrói pilha vazia.
     Pilha();
-    // Destrutor que desaloca memória.
     ~Pilha();
-    // Retira e retorna o valor que estiver no topo da pilha.
+
     Dado Desempilhar();
-    // Insere um elemento na pilha.
     void Empilhar(const Dado &d);
-    // Apagar todos os dados da pilha.
+    void soma(char tipo);
     void LimparTudo();
-    // Imprime o valor que está no topo sem desempilhar.
     inline void Topo();
-    // Informa se a pilha está Vazia.
     inline bool Vazia();
-    // Informa se a pilha está Cheia.
     inline bool Cheia();
-    //
-    inline void soma(char t);
 };
 
 Pilha::Pilha()
@@ -60,6 +52,7 @@ Pilha::Pilha()
 
 Pilha::~Pilha()
 {
+    this->LimparTudo();
     delete[] mPilha;
 }
 
@@ -69,11 +62,9 @@ void Pilha::Empilhar(const Dado &d)
     {
         throw runtime_error("Erro: pilha cheia!");
     }
-    else
-    {
-        posTopo++;
-        mPilha[posTopo] = d;
-    }
+
+    posTopo++;
+    mPilha[posTopo] = d;
 }
 
 Dado Pilha::Desempilhar()
@@ -83,35 +74,39 @@ Dado Pilha::Desempilhar()
         throw runtime_error("Erro: pilha vazia!");
     }
 
-    Dado topo = mPilha[posTopo];
+    Dado dadoAux = mPilha[posTopo];
     posTopo--;
-    return topo;
+    return dadoAux;
 }
 
-void Pilha::soma(char t)
+void Pilha::soma(char tipo)
 {
+    if (this->Vazia())
+    {
+        throw runtime_error("Erro: pilha vazia!");
+    }
+
+    Pilha *pAux = new Pilha();
+    Dado dAux;
     int soma = 0;
-    Dado dadoAux;
-    Pilha *pilhaAux = new Pilha;
 
     while (!this->Vazia())
     {
-        dadoAux = this->Desempilhar();
-
-        if (dadoAux.tipo == t)
+        dAux = this->Desempilhar();
+        if (dAux.tipo == tipo)
         {
-            soma += dadoAux.valor;
+            soma += dAux.valor;
         }
+        pAux->Empilhar(dAux);
     }
 
-    while (!pilhaAux->Vazia())
+    while (!pAux->Vazia())
     {
-        this->Empilhar(pilhaAux->Desempilhar());
+        this->Empilhar(pAux->Desempilhar());
     }
-
-    delete pilhaAux;
 
     cout << soma << endl;
+    delete pAux;
 }
 
 void Pilha::LimparTudo()
@@ -133,22 +128,12 @@ void Pilha::Topo()
 
 bool Pilha::Vazia()
 {
-    if (posTopo == PILHAVAZIA)
-    {
-        return true;
-    }
-
-    return false;
+    return (posTopo == PILHAVAZIA) ? true : false;
 }
 
 bool Pilha::Cheia()
 {
-    if (posTopo == TAMANHOPILHA - 1)
-    {
-        return true;
-    }
-
-    return false;
+    return (posTopo == TAMANHOPILHA - 1) ? true : false;
 }
 
 int main()
@@ -156,6 +141,7 @@ int main()
     Pilha pilha;
     Dado info;
     char comando;
+    char somaTipo;
     do
     {
         try
@@ -183,9 +169,8 @@ int main()
                 // checado no do-while
                 break;
             case 's':
-                char tipo;
-                cin >> tipo;
-                pilha.soma(tipo);
+                cin >> somaTipo;
+                pilha.soma(somaTipo);
                 break;
             default:
                 cerr << "comando inválido\n";
@@ -196,6 +181,7 @@ int main()
             cout << e.what() << endl;
         }
     } while (comando != 'f'); // finalizar execução
+
     while (!pilha.Vazia())
     {
         imprimir_dado(pilha.Desempilhar());
