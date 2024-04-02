@@ -44,7 +44,7 @@ public:
     ~Pilha();
 
     void Empilhar(const Dado &d);
-    Dado Desempilhar(); // retorna o mPtTopo da Pilha.
+    Dado Desempilhar();
     void Ordernar();
     void LimparTudo();
     inline void Topo();

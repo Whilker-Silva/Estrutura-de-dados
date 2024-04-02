@@ -160,10 +160,7 @@ int main()
                 pilha.LimparTudo();
                 break;
             case 'e': // espiar
-                if (!pilha.Vazia())
-                    pilha.Topo();
-                else
-                    cout << " Pilha vazia!" << endl;
+                pilha.Topo();
                 break;
             case 'f': // finalizar
                 // checado no do-while

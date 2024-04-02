@@ -21,50 +21,38 @@ struct Dado
 // Imprime informações de um dado qualquer.
 void imprimir_dado(const Dado &umDado)
 {
-    cout << "Nome: " << umDado.nome;
-    cout << " Assunto: " << umDado.assunto;
-    cout << " Tipo: " << umDado.tipo;
-    cout << " Processo: " << umDado.nProcesso << endl;
+    cout << "nome: " << umDado.nome;
+    cout << " assunto: " << umDado.assunto;
+    cout << " tipo: " << umDado.tipo;
+    cout << " numero do processo: " << umDado.nProcesso << endl;
 }
 
 class Fila
 {
 private:
-    const int CAPACIDADE = 6;
-
     Dado *mFila;
-    int posPrimeiro, posUltimo, tamanho;
+    int posPrimeiro, posUltimo;
 
 public:
-    // Constrói fila vazia.
     Fila();
-    // Destrutor que desaloca memória.
     ~Fila();
-    // Retira e retorna o elemento que estiver na primeira posição.
     Dado Desenfileirar();
-    // Insere um elemento na fila.
     void Enfileirar(const Dado &d);
-    // Apagar todos os dados da fila.
     void LimparTudo();
-    // Imprime os valores do elemento que está na frente da fila, sem Desenfileirar.
     inline void PrimeiroDaFila();
-    // Informa se a fila está Vazia.
     inline bool Vazia();
-    // Informa se a fila está Cheia.
     inline bool Cheia();
 };
 
 Fila::Fila()
 {
-    mFila = new Dado[CAPACIDADE];
-    posPrimeiro = -1;
-    posUltimo = -1;
-    tamanho = 0;
+    mFila = new Dado[CAPACIDADE_FILA];
+    posPrimeiro = FILAVAZIA;
+    posUltimo = FILAVAZIA;
 }
 
 Fila::~Fila()
 {
-    this->LimparTudo();
     delete[] mFila;
 }
 
@@ -75,17 +63,13 @@ void Fila::Enfileirar(const Dado &d)
         throw runtime_error("Erro: fila cheia!");
     }
 
-    else
+    if (this->Vazia())
     {
-        if (this->Vazia())
-        {
-            posPrimeiro++;
-        }
-
-        posUltimo = (posUltimo + 1) % CAPACIDADE;
-        mFila[posUltimo] = d;
-        tamanho++;
+        posPrimeiro++;
     }
+
+    posUltimo = (posUltimo + 1) % CAPACIDADE_FILA;
+    mFila[posUltimo] = d;
 }
 
 Dado Fila::Desenfileirar()
@@ -94,23 +78,20 @@ Dado Fila::Desenfileirar()
     {
         throw runtime_error("Erro: fila vazia!");
     }
+
+    Dado aux = mFila[posPrimeiro];
+
+    if (posPrimeiro == posUltimo)
+    {
+        posPrimeiro = FILAVAZIA;
+        posUltimo = FILAVAZIA;
+    }
     else
     {
-        Dado aux = mFila[posPrimeiro];
-
-        if (posPrimeiro == posUltimo)
-        {
-            posPrimeiro = -1;
-            posUltimo = -1;
-        }
-        else
-        {
-            posPrimeiro = (posPrimeiro + 1) % CAPACIDADE;
-        }
-        tamanho--;
-
-        return aux;
+        posPrimeiro = (posPrimeiro + 1) % CAPACIDADE_FILA;
     }
+
+    return aux;
 }
 
 void Fila::LimparTudo()
@@ -127,28 +108,18 @@ void Fila::PrimeiroDaFila()
     {
         throw runtime_error("Erro: fila vazia!");
     }
-    else
-    {
-        imprimir_dado(mFila[posPrimeiro]);
-    }
+
+    imprimir_dado(mFila[posPrimeiro]);
 }
 
 bool Fila::Vazia()
 {
-    if (posPrimeiro < 0)
-    {
-        return true;
-    }
-    return false;
+    return (posPrimeiro == FILAVAZIA) ? true : false;
 }
 
 bool Fila::Cheia()
 {
-    if (tamanho == CAPACIDADE)
-    {
-        return true;
-    }
-    return false;
+    return (((posUltimo + 1) % CAPACIDADE_FILA) == posPrimeiro) ? true : false;
 }
 
 int main()
@@ -163,24 +134,20 @@ int main()
             cin >> comando;
             switch (comando)
             {
-            case 'i': // inserir
+            case 'i':
                 cin >> info.nome >> info.assunto >> info.tipo >> info.nProcesso;
                 fila.Enfileirar(info);
                 break;
-            case 'r': // remover
+            case 'r':
                 imprimir_dado(fila.Desenfileirar());
                 break;
-            case 'l': // limpar tudo
+            case 'l':
                 fila.LimparTudo();
                 break;
-            case 'e': // espiar
-                if (!fila.Vazia())
-                    fila.PrimeiroDaFila();
-                else
-                    cout << "Erro: fila vazia!" << endl;
+            case 'e':
+                fila.PrimeiroDaFila();
                 break;
-            case 'f': // finalizar
-                // checado no do-while
+            case 'f':
                 break;
             default:
                 cerr << "comando inválido\n";
@@ -191,7 +158,6 @@ int main()
             cout << e.what() << endl;
         }
     } while (comando != 'f'); // finalizar execução
-
     while (!fila.Vazia())
     {
         imprimir_dado(fila.Desenfileirar());
