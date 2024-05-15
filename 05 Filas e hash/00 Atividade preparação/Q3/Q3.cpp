@@ -163,6 +163,7 @@ public:
             return false;
         }
     }
+    
     // Retorna um valor associado a uma dada chave.
     // Se a chave não existe, retorna "NÃO ENCONTRADO!".
     bool valor(const string &c, char &tipoBuscado, int &valorRetorno)
