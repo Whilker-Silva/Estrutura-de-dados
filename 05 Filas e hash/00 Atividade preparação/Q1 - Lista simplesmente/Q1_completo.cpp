@@ -38,14 +38,19 @@ private:
     noh *ultimo;
     int tamanho;
 
-    void removeTodos();   
+    void removeTodos();
+    void imprimeReversoAux(noh *umNoh);
     void printValores(equipe elenco);
     inline bool vazia();
 
 public:
     // construtores e destrutor
-    lista();    
+    lista();
+    lista(const lista &umaLista);
     ~lista();
+
+    // sobrecarga do operador de atribuição
+    lista &operator=(const lista &umaLista);
 
     // inserção, remoção e procura
     void insereVazia(equipe elenco);
@@ -59,7 +64,8 @@ public:
     int procura(string valor); // retorna a posição do nó com va
 
     // métodos adicionais (impressão, vazia)
-    void imprime();    
+    void imprime();
+    void imprimeReverso();
 };
 
 // constrói uma lista inicialmente vazia
@@ -68,6 +74,16 @@ lista::lista()
     primeiro = NULL;
     ultimo = NULL;
     tamanho = 0;
+}
+
+// construtor de cópia
+lista::lista(const lista &umaLista)
+{
+    primeiro = NULL;
+    ultimo = NULL;
+    tamanho = 0;
+
+    *this = umaLista;
 }
 
 // destrutor da lista (chama função privada auxiliar)
@@ -89,7 +105,22 @@ void lista::removeTodos()
     tamanho = 0;
 }
 
+// sobrecarga do operador de atribuição
+lista &lista::operator=(const lista &umaLista)
+{
+    // limpa a lista atual
+    removeTodos();
+    // percorre a lista recebida como parâmetro, copiando os dados
+    noh *aux = umaLista.primeiro;
 
+    while (aux != NULL)
+    {
+        insereNoFim(aux->elenco);
+        aux = aux->proximo;
+    }
+
+    return *this;
+}
 
 void lista::insereVazia(equipe elenco)
 {
@@ -279,6 +310,21 @@ void lista::imprime()
         aux = aux->proximo;
     }
 }
+
+void lista::imprimeReverso()
+{
+    imprimeReversoAux(primeiro);
+}
+
+void lista::imprimeReversoAux(noh *umNoh)
+{
+    if (umNoh != NULL)
+    {
+        imprimeReversoAux(umNoh->proximo);
+        printValores(umNoh->elenco);
+    }
+}
+
 // verifica se a lista está vazia
 inline bool lista::vazia()
 {
